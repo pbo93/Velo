@@ -1,10 +1,13 @@
-export function generateOrderCode(prefix = 'VLO') {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const digits = '0123456789';
-  
-    const pick = (chars, length) =>
-      Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  
-    return `${prefix}-${pick(letters, 3)}${pick(digits, 3)}`;
-  }
-  
+export function generateOrderCode() {
+    const prefix = 'VLO';
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomPart = '';
+
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        randomPart += chars[randomIndex];
+    }
+
+    return `${prefix}-${randomPart}`;
+}
