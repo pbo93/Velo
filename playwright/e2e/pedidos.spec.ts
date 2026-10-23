@@ -1,7 +1,8 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@playwright/test'
 
 import { generateOrderCode } from '../support/helpers'
 
+import { LandingPage } from '../support/pages/LandingPage'
 import { OrderLockupPage } from '../support/pages/OrderLockupPage'
 
 /// AAA - Arrange, Act, Assert
@@ -10,11 +11,12 @@ test.describe('Consulta de Pedido', () => {
 
   test.beforeEach(async ({ page }) => {
     // Arrange
-    await page.goto('http://localhost:5173/')
-    await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint')
+    const landingPage = new LandingPage(page)
+    const orderLockupPage = new OrderLockupPage(page)
 
-    await page.getByRole('link', { name: 'Consultar Pedido' }).click()
-    await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
+    await landingPage.goto()
+    await landingPage.navbar.goToOrderLookup()
+    await orderLockupPage.expectLoaded()
   })
 
   test('deve consultar um pedido aprovado', async ({ page }) => {
