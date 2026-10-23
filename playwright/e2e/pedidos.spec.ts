@@ -1,25 +1,17 @@
-import { test } from '@playwright/test'
-
 import { generateOrderCode } from '../support/helpers'
 
-import { LandingPage } from '../support/pages/LandingPage'
-import { OrderLockupPage } from '../support/pages/OrderLockupPage'
+import { test } from '../support/fixtures'
 
 /// AAA - Arrange, Act, Assert
 
 test.describe('Consulta de Pedido', () => {
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ app }) => {
     // Arrange
-    const landingPage = new LandingPage(page)
-    const orderLockupPage = new OrderLockupPage(page)
-
-    await landingPage.goto()
-    await landingPage.navbar.goToOrderLookup()
-    await orderLockupPage.expectLoaded()
+    await app.orderLookup.open()
   })
 
-  test('deve consultar um pedido aprovado', async ({ page }) => {
+  test('deve consultar um pedido aprovado', async ({ app }) => {
 
     // Test Data
     const order = {
@@ -35,18 +27,17 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const orderLockupPage = new OrderLockupPage(page)
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLookup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
+    await app.orderLookup.validateOrderDetails(order)
 
     // Validação do badge de status encapsulada no Page Object
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLookup.validateStatusBadge(order.status)
 
   })
 
-  test('deve consultar um pedido reprovado', async ({ page }) => {
+  test('deve consultar um pedido reprovado', async ({ app }) => {
 
     // Test Data
     const order = {
@@ -62,17 +53,16 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const orderLockupPage = new OrderLockupPage(page)
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLookup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
+    await app.orderLookup.validateOrderDetails(order)
 
     // Validação do badge de status encapsulada no Page Object
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLookup.validateStatusBadge(order.status)
   })
 
-  test('deve consultar um pedido em analise', async ({ page }) => {
+  test('deve consultar um pedido em analise', async ({ app }) => {
 
     // Test Data
     const order = {
@@ -88,25 +78,23 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const orderLockupPage = new OrderLockupPage(page)
-    await orderLockupPage.searchOrder(order.number)
+    await app.orderLookup.searchOrder(order.number)
 
     // Assert
-    await orderLockupPage.validateOrderDetails(order)
+    await app.orderLookup.validateOrderDetails(order)
 
     // Validação do badge de status encapsulada no Page Object
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLookup.validateStatusBadge(order.status)
   })
 
-  test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
+  test('deve exibir mensagem quando o pedido não é encontrado', async ({ app }) => {
 
     const order = generateOrderCode()
 
-    const orderLockupPage = new OrderLockupPage(page)
-    await orderLockupPage.searchOrder(order)
+    await app.orderLookup.searchOrder(order)
 
 
-    await orderLockupPage.validateOrderNotFound()
+    await app.orderLookup.validateOrderNotFound()
 
   })
 })
